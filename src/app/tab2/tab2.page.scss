@@ -1,0 +1,74 @@
+// src/app/tab2/tab2.page.scss
+.stat-card {
+    text-align: center;
+    border-radius: 15px;
+    box-shadow: none;
+    background: var(--ion-color-light);
+  
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--ion-color-primary);
+      margin-bottom: 5px;
+    }
+  
+    .stat-label {
+      font-size: 12px;
+      color: var(--ion-color-medium);
+    }
+  }
+  
+  .chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    overflow-x: auto;
+  }
+  
+  ion-card {
+    border-radius: 15px;
+    margin: 10px 0;
+    
+    ion-card-header {
+      padding-bottom: 0;
+    }
+  
+    ion-card-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+  }
+  
+  ion-list {
+    background: transparent;
+    padding: 0;
+    
+    ion-list-header {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--ion-color-medium);
+    }
+  
+    ion-item {
+      --padding-start: 0;
+      --inner-padding-end: 0;
+      
+      h2 {
+        font-size: 16px;
+        font-weight: 500;
+      }
+  
+      p {
+        font-size: 14px;
+        color: var(--ion-color-medium);
+      }
+  
+      ion-note {
+        font-size: 14px;
+        font-weight: 500;
+      }
+    }
+  }
+  

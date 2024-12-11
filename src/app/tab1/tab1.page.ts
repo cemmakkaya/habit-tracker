@@ -10,10 +10,6 @@ interface Habit {
   category: string;
   streak: number;
   color: string;
-  todayDone: boolean;
-  target: string;
-  history: boolean[];
-  progress: number;
 }
 
 @Component({

@@ -1,17 +1,108 @@
+<!-- src/app/tab2/tab2.page.html -->
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 2
+      Statistiken
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- Zusammenfassung -->
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6">
+        <ion-card class="stat-card">
+          <ion-card-content>
+            <div class="stat-value">12</div>
+            <div class="stat-label">Längste Streak</div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col size="6">
+        <ion-card class="stat-card">
+          <ion-card-content>
+            <div class="stat-value">85%</div>
+            <div class="stat-label">Durchschnittlich</div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+  <!-- Wochenübersicht -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Wochenübersicht</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="chart-container">
+        <LineChart width={350} height={200} data={streakData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="Lesen" stroke="#8884d8" />
+          <Line type="monotone" dataKey="Sport" stroke="#82ca9d" />
+          <Line type="monotone" dataKey="Meditation" stroke="#ffc658" />
+        </LineChart>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Gewohnheiten Übersicht -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Gewohnheiten Übersicht</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="chart-container">
+        <PieChart width={350} height={200}>
+          <Pie 
+            data={completionData} 
+            dataKey="value" 
+            nameKey="name" 
+            cx="50%" 
+            cy="50%"
+            outerRadius={80} 
+            fill="#8884d8"
+            label
+          />
+          <Tooltip />
+        </PieChart>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Detaillierte Statistiken -->
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Detaillierte Statistiken</ion-label>
+    </ion-list-header>
+
+    <ion-item>
+      <ion-label>
+        <h2>Lesen</h2>
+        <p>85% Erfolgsrate</p>
+      </ion-label>
+      <ion-note slot="end" color="success">+5% diese Woche</ion-note>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <h2>Sport</h2>
+        <p>70% Erfolgsrate</p>
+      </ion-label>
+      <ion-note slot="end" color="warning">-2% diese Woche</ion-note>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <h2>Meditation</h2>
+        <p>60% Erfolgsrate</p>
+      </ion-label>
+      <ion-note slot="end" color="success">+8% diese Woche</ion-note>
+    </ion-item>
+  </ion-list>
 </ion-content>

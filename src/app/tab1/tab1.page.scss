@@ -73,8 +73,8 @@
           padding: 4px 8px;
           border-radius: 12px;
           width: 30px;
-          display: flex;
-          align-items: center;
+    display: flex;
+    align-items: center;
           gap: 4px;
           font-size: 14px;
   
@@ -101,16 +101,14 @@
         }
       }
   
-      .habit-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 8px;
-        
-        ion-button {
-          --padding-start: 8px;
-          --padding-end: 8px;
-        }
-      }
+  .habit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    
+    ion-button {
+      --padding-start: 8px;
+      --padding-end: 8px;
     }
   }
   
