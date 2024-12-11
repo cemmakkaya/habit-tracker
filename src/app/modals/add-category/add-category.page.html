@@ -1,0 +1,27 @@
+<!-- src/app/modals/add-category/add-category.page.html -->
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Neue Kategorie</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-label position="stacked">Name der Kategorie</ion-label>
+    <ion-input [(ngModel)]="category.name" placeholder="z.B. Fitness"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Farbe</ion-label>
+    <ion-input type="color" [(ngModel)]="category.color"></ion-input>
+  </ion-item>
+
+  <ion-button expand="block" class="ion-margin-top" (click)="confirm()" [disabled]="!category.name.trim()">
+    Kategorie hinzufügen
+  </ion-button>
+</ion-content>

@@ -1,0 +1,15 @@
+// src/app/modals/add-category/add-category.page.scss
+ion-item {
+    --padding-start: 0;
+    margin-bottom: 16px;
+  }
+  
+  ion-input[type="color"] {
+    --padding-start: 0;
+    height: 44px;
+  }
+  
+  .ion-margin-top {
+    margin-top: 24px;
+  }
+  

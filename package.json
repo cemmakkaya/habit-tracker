@@ -30,7 +30,6 @@
     "@capacitor/preferences": "^6.0.3",
     "@capacitor/status-bar": "6.0.2",
     "@ionic/angular": "^8.0.0",
-    "@swimlane/ngx-charts": "^21.0.0",
     "@types/recharts": "^1.8.29",
     "chart.js": "^4.4.7",
     "ionicons": "^7.2.1",

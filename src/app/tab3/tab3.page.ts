@@ -1,12 +1,9 @@
-// tab3/tab3.page.ts
-import { Component } from '@angular/core';
+// src/app/tab3/tab3.page.ts
+import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { App } from '@capacitor/app';
-import { LocalNotifications } from '@capacitor/local-notifications';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
-import { Storage } from '@capacitor/storage';
+import { Preferences } from '@capacitor/preferences';
 
 @Component({
   selector: 'app-tab3',
@@ -15,7 +12,7 @@ import { Storage } from '@capacitor/storage';
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule]
 })
-export class Tab3Page {
+export class Tab3Page implements OnInit {
   settings = {
     notifications: true,
     darkMode: false,
@@ -24,60 +21,30 @@ export class Tab3Page {
     language: 'de'
   };
 
-  appInfo = {
-    version: '',
-    name: ''
-  };
-
-  constructor() {
-    this.loadSettings();
-    this.getAppInfo();
+  async ngOnInit() {
+    await this.loadSettings();
+    document.body.classList.toggle('dark', this.settings.darkMode);
   }
 
   async toggleNotifications(event: any) {
-    const permitted = await LocalNotifications.requestPermissions();
-    if (permitted) {
-      this.settings.notifications = event.detail.checked;
-      await this.saveSettings();
-      this.triggerHaptic();
-    }
+    this.settings.notifications = event.detail.checked;
+    await this.saveSettings();
   }
 
   async toggleHaptics(event: any) {
     this.settings.haptics = event.detail.checked;
     await this.saveSettings();
-    if (this.settings.haptics) {
-      await this.triggerHaptic();
-    }
   }
 
-  async triggerHaptic() {
-    if (this.settings.haptics) {
-      await Haptics.impact({ style: ImpactStyle.Light });
-    }
-  }
-
-  async getAppInfo() {
-    const info = await App.getInfo();
-    this.appInfo = info;
-  }
-
-  async loadSettings() {
-    const settings = await Storage.get({ key: 'settings' });
-    if (settings.value) {
-      this.settings = JSON.parse(settings.value);
-    }
-  }
-
-  async saveSettings() {
-    await Storage.set({
-      key: 'settings',
-      value: JSON.stringify(this.settings)
-    });
+  async toggleDarkMode(event: any) {
+    const isDark = event.detail.checked;
+    document.body.classList.toggle('dark', isDark);
+    this.settings.darkMode = isDark;
+    await this.saveSettings();
   }
 
   async resetApp() {
-    await Storage.clear();
+    await Preferences.clear();
     this.settings = {
       notifications: true,
       darkMode: false,
@@ -86,6 +53,19 @@ export class Tab3Page {
       language: 'de'
     };
     await this.saveSettings();
-    this.triggerHaptic();
+  }
+
+  async saveSettings() {
+    await Preferences.set({
+      key: 'settings',
+      value: JSON.stringify(this.settings)
+    });
+  }
+
+  async loadSettings() {
+    const { value } = await Preferences.get({ key: 'settings' });
+    if (value) {
+      this.settings = JSON.parse(value);
+    }
   }
 }

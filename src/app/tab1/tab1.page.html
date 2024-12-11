@@ -50,18 +50,26 @@
 
   <!-- Gewohnheiten Liste -->
   <div class="habits-container">
-    <ion-card *ngFor="let habit of habits" class="habit-card" [style.border-left]="'4px solid ' + habit.color">
-      <ion-card-content>
-        <div class="habit-header">
-          <div>
-            <h2>{{habit.name}}</h2>
-            <p class="category">{{habit.category}}</p>
+      <ion-card *ngFor="let habit of habits" class="habit-card" [style.border-left]="'4px solid ' + habit.color">
+        <ion-card-content>
+          <div class="habit-header">
+            <div class="habit-title">
+              <div class="habit-checkbox" 
+                   [class.checked]="habit.todayDone"
+                   (click)="toggleTodayDone(habit, $event)">
+                <ion-icon name="checkmark"></ion-icon>
+              </div>
+              <div>
+                <h2>{{habit.name}}</h2>
+                <p class="category">{{habit.category}}</p>
+              </div>
+            </div>
+            <div class="streak-badge">
+              <ion-icon name="flame"></ion-icon>
+              {{habit.streak}}
+            </div>
           </div>
-          <div class="streak-badge">
-            <ion-icon name="flame"></ion-icon>
-            {{habit.streak}}
-          </div>
-        </div>
+        
         
         <div class="progress-container">
           <ion-progress-bar [value]="habit.progress/100" [style.--progress-background]="habit.color"></ion-progress-bar>
@@ -85,7 +93,7 @@
 
   <!-- Floating Action Button -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button>
+    <ion-fab-button (click)="openAddHabitModal()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

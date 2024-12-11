@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Neue Gewohnheit</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-label position="stacked">Name</ion-label>
+    <ion-input [(ngModel)]="habit.name" placeholder="z.B. Lesen"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Kategorie</ion-label>
+    <ion-select [(ngModel)]="habit.category">
+      <ion-select-option *ngFor="let cat of categories" [value]="cat.name">
+        {{cat.name}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Ziel</ion-label>
+    <ion-input [(ngModel)]="habit.target" placeholder="z.B. 30 Minuten täglich"></ion-input>
+  </ion-item>
+
+  <ion-button expand="block" class="ion-margin-top" (click)="confirm()">
+    Hinzufügen
+  </ion-button>
+</ion-content>
