@@ -1,17 +1,73 @@
+<!-- tab3/tab3.page.html -->
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 3
+      Einstellungen
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Benachrichtigungen</ion-label>
+    </ion-list-header>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+    <ion-item>
+      <ion-toggle [(ngModel)]="settings.notifications" 
+                 (ionChange)="toggleNotifications($event)">
+        Push-Benachrichtigungen
+      </ion-toggle>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Erinnerungszeit</ion-label>
+      <ion-datetime-button datetime="reminderTime"></ion-datetime-button>
+      <ion-modal [keepContentsMounted]="true">
+        <ng-template>
+          <ion-datetime 
+            id="reminderTime" 
+            [(ngModel)]="settings.reminderTime"
+            (ionChange)="saveSettings()"
+            presentation="time"
+            locale="de-DE">
+          </ion-datetime>
+        </ng-template>
+      </ion-modal>
+    </ion-item>
+
+    <ion-list-header>
+      <ion-label>Erscheinungsbild</ion-label>
+    </ion-list-header>
+
+    <ion-item>
+      <ion-toggle [(ngModel)]="settings.darkMode" 
+                 (ionChange)="saveSettings()">
+        Dark Mode
+      </ion-toggle>
+    </ion-item>
+
+    <ion-item>
+      <ion-toggle [(ngModel)]="settings.haptics" 
+                 (ionChange)="toggleHaptics($event)">
+        Haptisches Feedback
+      </ion-toggle>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Sprache</ion-label>
+      <ion-select [(ngModel)]="settings.language" 
+                 (ionChange)="saveSettings()">
+        <ion-select-option value="de">Deutsch</ion-select-option>
+        <ion-select-option value="en">English</ion-select-option>
+        <ion-select-option value="fr">Français</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+  <div class="ion-padding">
+    <ion-button expand="block" color="danger" (click)="resetApp()">
+      App zurücksetzen
+    </ion-button>
+  </div>
+  </ion-list>
 </ion-content>

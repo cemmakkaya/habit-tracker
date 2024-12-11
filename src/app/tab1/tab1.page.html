@@ -1,9 +1,22 @@
 <!-- src/app/tab1/tab1.page.html -->
-<ion-header [translucent]="true">
+<ion-header [translucent]="true" class="ion-no-border">
   <ion-toolbar>
-    <ion-title>
+    <ion-title class="ion-text-center">
       MyHabitTracker
     </ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="selectedSegment" class="custom-segment">
+      <ion-segment-button value="all">
+        <ion-label>Alle</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="inProgress">
+        <ion-label>Aktiv</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="completed">
+        <ion-label>Abgeschlossen</ion-label>
+      </ion-segment-button>
+    </ion-segment>
   </ion-toolbar>
 </ion-header>
 
@@ -37,40 +50,34 @@
 
   <!-- Gewohnheiten Liste -->
   <div class="habits-container">
-    <ion-card *ngFor="let habit of habits">
+    <ion-card *ngFor="let habit of habits" class="habit-card" [style.border-left]="'4px solid ' + habit.color">
       <ion-card-content>
         <div class="habit-header">
-          <div class="habit-title">
-            <div class="habit-checkbox" 
-                 [class.checked]="habit.todayDone"
-                 (click)="toggleTodayDone(habit, $event)">
-              <ion-icon name="checkmark"></ion-icon>
-            </div>
+          <div>
             <h2>{{habit.name}}</h2>
+            <p class="category">{{habit.category}}</p>
           </div>
-          <div class="streak-badge" 
-               [class.active]="habit.todayDone">
-            <ion-icon name="flame" 
-                      [class.burning]="true"
-                      [style.color]="getStreakIntensityColor(habit.streak)">
-            </ion-icon>
-            <div class="streak-count">
-              <span [style.color]="getStreakIntensityColor(habit.streak)">
-                {{habit.streak}}
-              </span>
-              <ion-icon name="flame" 
-                        class="small-flame"
-                        [style.color]="getStreakIntensityColor(habit.streak)">
-              </ion-icon>
-            </div>
+          <div class="streak-badge">
+            <ion-icon name="flame"></ion-icon>
+            {{habit.streak}}
           </div>
         </div>
         
         <div class="progress-container">
-          <ion-progress-bar [value]="habit.progress/100" 
-                           [style.--progress-background]="habit.color">
-          </ion-progress-bar>
+          <ion-progress-bar [value]="habit.progress/100" [style.--progress-background]="habit.color"></ion-progress-bar>
           <span class="progress-text">{{habit.progress}}%</span>
+        </div>
+        
+        <div class="habit-actions">
+          <ion-button fill="clear" size="small">
+            <ion-icon slot="icon-only" name="camera-outline"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" size="small">
+            <ion-icon slot="icon-only" name="mic-outline"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" size="small">
+            <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+          </ion-button>
         </div>
       </ion-card-content>
     </ion-card>
