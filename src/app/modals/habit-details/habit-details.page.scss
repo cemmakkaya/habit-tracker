@@ -1,118 +1,147 @@
-// src/app/modals/habit-details/habit-details.page.scss
 .hero-section {
-    padding: 24px;
-    border-radius: 16px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
+  padding: 20px 16px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #ffa012 0%, #ff6536 100%);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
   .streak-container, .progress-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
   }
-  
+
   .streak-badge {
     display: flex;
     align-items: center;
-    gap: 4px;
-    background: white;
-    padding: 12px 20px;
-    border-radius: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 12px 18px;
+    border-radius: 16px;
+    backdrop-filter: blur(8px);
+
     ion-icon {
-      font-size: 24px;
+      font-size: 22px;
+      color: white;
     }
-  
+
     .streak-count {
-      font-size: 24px;
-      font-weight: bold;
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
     }
   }
-  
+
   .progress-circle {
-    width: 64px;
-    height: 64px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    background: white;
+    background: rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  
+    backdrop-filter: blur(8px);
+
     .progress-text {
       font-size: 18px;
-      font-weight: bold;
+      font-weight: 700;
+      color: white;
     }
   }
-  
+
   .streak-label, .progress-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+    font-weight: 500;
+  }
+}
+
+.custom-segment {
+  background: none;
+  font-size: 26px;
+  border-radius: 12px;
+  padding: 3px;
+  margin: 12px 0;
+  margin-top: 40px;
+  height: 30;
+}
+
+// Verbesserte Liste
+ion-item-divider {
+  --background: transparent;
+  --padding-start: 0;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+  color: var(--ion-color-medium);
+  margin-bottom: 12px;
+}
+
+.entry-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --border-radius: 12px;
+  margin-bottom: 12px;
+  --background: var(--ion-color-light);
+
+  h3 {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 4px;
+    color: var(--ion-color-dark);
+  }
+
+  p {
     color: var(--ion-color-medium);
     font-size: 14px;
+    line-height: 1.4;
   }
-  
-  .custom-segment {
-    background: var(--ion-color-light);
-    border-radius: 8px;
-    padding: 4px;
-  
-    ion-segment-button {
-      --indicator-color: var(--ion-color-primary);
-      --indicator-height: 100%;
-      --border-radius: 6px;
-      min-height: 40px;
+
+  .entry-actions {
+    opacity: 0.7;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 1;
     }
   }
-  
-  ion-item-divider {
-    --background: transparent;
-    --padding-start: 0;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--ion-color-medium);
-  }
-  
-  ion-item {
-    --padding-start: 0;
-    margin-bottom: 8px;
-  
-    h3 {
-      font-weight: 500;
-      margin-bottom: 4px;
-    }
-  
-    p {
-      color: var(--ion-color-medium);
-    }
-  }
+}
+
+// Verbesserte Statistiken
+.stats-card {
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    text-align: center;
-  
+    gap: 24px;
+    padding: 16px;
+
     .stat-item {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-  
+      gap: 8px;
+      padding: 16px;
+      background: var(--ion-color-light);
+      border-radius: 16px;
+
       .stat-value {
-        font-size: 24px;
-        font-weight: bold;
+        font-size: 28px;
+        font-weight: 700;
         color: var(--ion-color-primary);
       }
-  
+
       .stat-label {
         font-size: 14px;
         color: var(--ion-color-medium);
+        font-weight: 500;
       }
     }
   }
-  
+}

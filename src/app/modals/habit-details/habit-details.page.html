@@ -1,78 +1,78 @@
-<!-- src/app/modals/habit-details/habit-details.page.html -->
 <ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button (click)="dismiss()">
-        <ion-icon name="arrow-back-outline"></ion-icon>
+        <ion-icon name="arrow-back-outline" size="large"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>{{habit.name}}</ion-title>
+    <ion-title class="ion-text-center">{{habit.name}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
   <!-- Hero Section -->
-  <div class="hero-section" [style.background]="habit.color + '22'">
+  <div class="hero-section" [style.background-color]="habit.color">
     <div class="streak-container">
       <div class="streak-badge">
-        <ion-icon name="flame" [style.color]="habit.color"></ion-icon>
+        <ion-icon name="flame"></ion-icon>
         <span class="streak-count">{{habit.streak}}</span>
       </div>
-      <span class="streak-label">Tage Streak</span>
+      <span class="streak-label">Streak</span>
     </div>
     
     <div class="progress-container">
       <div class="progress-circle">
         <span class="progress-text">{{habit.progress}}%</span>
       </div>
-      <span class="progress-label">Erfolgsrate</span>
+      <span class="progress-label">Fortschritt</span>
     </div>
   </div>
 
   <!-- Segment Control -->
-  <ion-segment [(ngModel)]="selectedSegment" class="custom-segment ion-margin-vertical">
-    <ion-segment-button value="entries">
+  <ion-span [(ngModel)]="selectedSegment" class="custom-segment ion-margin-vertical">
       <ion-label>Einträge</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="stats">
-      <ion-label>Statistiken</ion-label>
-    </ion-segment-button>
-  </ion-segment>
+  </ion-span>
 
   <!-- Content based on segment -->
-  <div [ngSwitch]="selectedSegment">
-    <div *ngSwitchCase="'entries'">
+  <div [ngSwitch]="selectedSegment" class="segment-content">
+    <div *ngSwitchCase="'entries'" class="entries-container">
       <ion-list>
         <ion-item-group>
           <ion-item-divider sticky>
             <ion-label>Heute</ion-label>
           </ion-item-divider>
           
-          <ion-item *ngFor="let entry of habit.entries">
-            <ion-thumbnail slot="start" *ngIf="entry.type === 'image'">
+          <ion-item *ngFor="let entry of habit.entries" class="entry-item">
+            <ion-thumbnail slot="start" *ngIf="entry.type === 'image'" class="entry-thumbnail">
               <img [src]="entry.content" alt="Entry image">
             </ion-thumbnail>
             <ion-icon 
               *ngIf="entry.type === 'audio'" 
               name="musical-note" 
               slot="start"
-              color="primary">
+              size="large"
+              color="primary"
+              class="entry-icon">
             </ion-icon>
             <ion-label>
-              <h3>{{entry.date | date:'HH:mm'}}</h3>
-              <p *ngIf="entry.type === 'text'">{{entry.content}}</p>
+              <h3 class="entry-time">{{entry.date | date:'HH:mm'}}</h3>
+              <p class="entry-content" *ngIf="entry.type === 'text'">{{entry.content}}</p>
             </ion-label>
-            <ion-button fill="clear" slot="end" *ngIf="entry.type === 'audio'">
-              <ion-icon name="play"></ion-icon>
-            </ion-button>
+            <ion-buttons slot="end" class="entry-actions">
+              <ion-button (click)="editEntry(entry, $event)" class="edit-button">
+                <ion-icon name="create" color="primary" size="small"></ion-icon>
+              </ion-button>
+              <ion-button (click)="deleteEntry(entry, $event)" class="delete-button">
+                <ion-icon name="trash" color="danger" size="small"></ion-icon>
+              </ion-button>
+            </ion-buttons>
           </ion-item>
         </ion-item-group>
       </ion-list>
     </div>
 
-    <div *ngSwitchCase="'stats'">
-      <!-- Statistiken hier -->
-      <ion-card>
+    <div *ngSwitchCase="'stats'" class="stats-container">
+      <ion-card class="stats-card">
         <ion-card-content>
           <div class="stats-grid">
             <div class="stat-item">
@@ -81,7 +81,7 @@
             </div>
             <div class="stat-item">
               <span class="stat-value">{{habit.progress}}%</span>
-              <span class="stat-label">Durchschnitt</span>
+              <span class="stat-label">Gesamtfortschritt</span>
             </div>
           </div>
         </ion-card-content>

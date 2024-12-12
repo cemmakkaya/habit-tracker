@@ -16,87 +16,79 @@
       <div class="type-option" 
            [class.selected]="selectedType === 'text'"
            (click)="selectedType = 'text'">
-        <div class="icon-container">
-          <ion-icon name="create-outline"></ion-icon>
-        </div>
         <span>Text</span>
       </div>
 
       <div class="type-option"
-           [class.selected]="selectedType === 'photo'"
-           (click)="selectedType = 'photo'">
-        <div class="icon-container">
-          <ion-icon name="camera-outline"></ion-icon>
-        </div>
+           [class.selected]="selectedType === 'image'"
+           (click)="selectedType = 'image'">
         <span>Foto</span>
       </div>
 
       <div class="type-option"
            [class.selected]="selectedType === 'audio'"
            (click)="selectedType = 'audio'">
-        <div class="icon-container">
-          <ion-icon name="mic-outline"></ion-icon>
-        </div>
         <span>Audio</span>
       </div>
     </div>
 
     <!-- Input Area -->
-    <div class="input-area" [ngSwitch]="selectedType">
+    <div [ngSwitch]="selectedType">
       <!-- Text Input -->
-      <div *ngSwitchCase="'text'" class="text-input-container">
-        <ion-textarea
-          [(ngModel)]="entry.text"
-          placeholder="Beschreibe deinen Fortschritt..."
-          [rows]="6"
-          class="custom-textarea">
-        </ion-textarea>
+      <div *ngSwitchCase="'text'">
+        <ion-item>
+          <ion-textarea 
+            [(ngModel)]="entry.text"
+            placeholder="Beschreibe deinen Fortschritt..."
+            rows="4">
+          </ion-textarea>
+        </ion-item>
       </div>
 
       <!-- Photo Input -->
-      <div *ngSwitchCase="'photo'" class="photo-input-container">
-        <ng-container *ngIf="!entry.photoPath">
-          <div class="photo-placeholder" (click)="takePicture()">
-            <ion-icon name="camera"></ion-icon>
-            <p>Tippe um ein Foto aufzunehmen</p>
-          </div>
+      <div *ngSwitchCase="'image'">
+        <ng-container *ngIf="!entry.imagePath">
+          <ion-button (click)="takePicture()">
+            Foto aufnehmen
+          </ion-button>
         </ng-container>
-        <div *ngIf="entry.photoPath" class="photo-preview">
-          <img [src]="entry.photoPath" alt="Preview">
-          <ion-button fill="clear" (click)="takePicture()">
-            <ion-icon slot="start" name="camera"></ion-icon>
+        <div *ngIf="entry.imagePath" class="photo-preview">
+          <img [src]="entry.imagePath" alt="Preview">
+          <ion-button (click)="takePicture()">
             Neues Foto
           </ion-button>
         </div>
       </div>
 
       <!-- Audio Input -->
-      <div *ngSwitchCase="'audio'" class="audio-input-container">
-        <div class="audio-button-container">
-          <ion-button 
-            (click)="toggleRecording()" 
-            [color]="isRecording ? 'danger' : 'primary'"
-            class="record-button">
-            <ion-icon [name]="isRecording ? 'stop' : 'mic'"></ion-icon>
-            {{isRecording ? 'Aufnahme stoppen' : (audioRecorded ? 'Neu aufnehmen' : 'Aufnahme starten')}}
-          </ion-button>
-          <div *ngIf="isRecording" class="recording-indicator">
-            Aufnahme läuft...
-          </div>
+      <div *ngSwitchCase="'audio'">
+        <ion-button 
+          (click)="toggleRecording()"
+          [color]="isRecording ? 'danger' : 'primary'">
+          <ion-icon [name]="isRecording ? 'stop' : 'mic'"></ion-icon>
+          {{isRecording ? 'Aufnahme stoppen' : (audioRecorded ? 'Neu aufnehmen' : 'Aufnahme starten')}}
+        </ion-button>
+        <div *ngIf="isRecording" class="recording-indicator">
+          Aufnahme läuft...
         </div>
       </div>
     </div>
 
-    <div class="button-container">
-      <ion-button 
-        expand="block" 
-        (click)="confirm()"
-        [disabled]="!canConfirm()"
-        class="confirm-button">
-        Eintrag bestätigen
+    <div class="confirm-button-container">
+      <ion-button class="confirm-button" (click)="confirm()">
+        Bestätigen
       </ion-button>
     </div>
-
   </div>
 </ion-content>
 
+<ion-footer class="ion-no-border">
+  <ion-toolbar>
+    <ion-button 
+      expand="block" 
+      (click)="confirm()"
+      [disabled]="!canConfirm()">
+      Eintrag bestätigen
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

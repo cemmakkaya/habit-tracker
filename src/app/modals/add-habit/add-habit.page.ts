@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule, ModalController, AlertController } from '@ionic/angular';
+import { IonicModule, ModalController, AlertController, ToastController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SupabaseService } from '../../../services/supabase.service';
+import { Preferences } from '@capacitor/preferences';
 
 @Component({
   selector: 'app-add-habit',
@@ -12,12 +12,10 @@ import { SupabaseService } from '../../../services/supabase.service';
   imports: [IonicModule, CommonModule, FormsModule]
 })
 export class AddHabitPage implements OnInit {
-  categories: any[] = [];
+  categories: any[] = []; // Deine Kategorienliste
+  selectedCategory: any; // Die ausgewählte Kategorie
   
   habitName: string = '';
-  category: string = '';
-
-  selectedCategory: any = null;
   color: string = '#4CAF50';
   
   duration: number = 30;
@@ -30,7 +28,7 @@ export class AddHabitPage implements OnInit {
   constructor(
     private modalCtrl: ModalController,
     private alertController: AlertController,
-    private supabaseService: SupabaseService
+    private toastController: ToastController
   ) {}
 
   async ngOnInit() {
@@ -39,9 +37,19 @@ export class AddHabitPage implements OnInit {
 
   async loadCategories() {
     try {
-      this.categories = await this.supabaseService.getCategories();
+      this.categories = await this.getCategories();
     } catch (error) {
       console.error('Fehler beim Laden der Kategorien:', error);
+    }
+  }
+
+  async getCategories(): Promise<any[]> {
+    try {
+      const { value } = await Preferences.get({ key: 'categories' });
+      return value ? JSON.parse(value) : [];
+    } catch (error) {
+      console.error('Fehler beim Laden der Kategorien:', error);
+      return [];
     }
   }
 
@@ -69,12 +77,13 @@ export class AddHabitPage implements OnInit {
           handler: async (data) => {
             if (data.categoryName) {
               try {
-                const newCategory = await this.supabaseService.createCategory({
+                const newCategory = {
                   name: data.categoryName,
                   color: this.generateRandomColor()
-                });
-                this.categories.push(newCategory[0]);
-                this.selectCategory(newCategory[0]);
+                };
+                
+                await this.storeCategories([...this.categories, newCategory]);
+                this.selectCategory(newCategory);
               } catch (error) {
                 console.error('Fehler beim Erstellen der Kategorie:', error);
               }
@@ -85,6 +94,17 @@ export class AddHabitPage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  async storeCategories(categories: any[]) {
+    try {
+      await Preferences.set({
+        key: 'categories',
+        value: JSON.stringify(categories)
+      });
+    } catch (error) {
+      console.error('Fehler beim Speichern der Kategorien:', error);
+    }
   }
 
   selectCategory(category: any) {
@@ -107,21 +127,32 @@ export class AddHabitPage implements OnInit {
            this.duration > 0;
   }
 
-  confirm() {
+  async confirm() {
     if (this.isFormValid()) {
       const habitData = {
         name: this.habitName,
-        category: this.selectedCategory.id,
+        category: this.selectedCategory.name,
         color: this.color,
         duration: this.duration,
         frequency: this.frequency,
-        custom_frequency: this.customFrequency,
+        customFrequency: this.customFrequency,
         notifications: this.notifications,
-        notification_time: this.notifications ? this.notificationTime : null
+        notificationTime: this.notifications ? this.notificationTime : null
       };
-      
+
       this.modalCtrl.dismiss(habitData, 'confirm');
+    } else {
+      this.showValidationError();
     }
+  }
+
+  private async showValidationError() {
+    const toast = await this.toastController.create({
+      message: 'Bitte füllen Sie alle erforderlichen Felder aus.',
+      duration: 2000,
+      color: 'danger'
+    });
+    await toast.present();
   }
 
   dismiss() {

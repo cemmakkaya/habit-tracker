@@ -47,23 +47,6 @@
       </ion-toggle>
     </ion-item>
 
-    <ion-item>
-      <ion-toggle [(ngModel)]="settings.haptics" 
-                 (ionChange)="toggleHaptics($event)">
-        Haptisches Feedback
-      </ion-toggle>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>Sprache</ion-label>
-      <ion-select [(ngModel)]="settings.language" 
-                 (ionChange)="saveSettings()">
-        <ion-select-option value="de">Deutsch</ion-select-option>
-        <ion-select-option value="en">English</ion-select-option>
-        <ion-select-option value="fr">Français</ion-select-option>
-      </ion-select>
-    </ion-item>
-
   <div class="ion-padding">
     <ion-button expand="block" color="danger" (click)="resetApp()">
       App zurücksetzen

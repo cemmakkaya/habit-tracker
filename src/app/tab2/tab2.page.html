@@ -1,82 +1,73 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
+    <ion-title class="ion-text-center">
       Statistiken
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-  <ion-grid>
-    <ion-row>
-      <ion-col size="6">
-        <ion-card class="stat-card">
-          <ion-card-content>
-            <div class="stat-value">12</div>
-            <div class="stat-label">Längste Streak</div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-      <ion-col size="6">
-        <ion-card class="stat-card">
-          <ion-card-content>
-            <div class="stat-value">85%</div>
-            <div class="stat-label">Durchschnittlich</div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <!-- Übersichtskarten -->
+  <div class="stats-grid">
+    <ion-card class="stat-card">
+      <ion-card-content>
+        <ion-icon name="trophy-outline" color="warning"></ion-icon>
+        <div class="stat-value">{{overallStats.maxStreak}}</div>
+        <div class="stat-label">Beste Serie</div>
+      </ion-card-content>
+    </ion-card>
 
-  <ion-card>
+    <ion-card class="stat-card">
+      <ion-card-content>
+        <ion-icon name="bar-chart-outline" color="primary"></ion-icon>
+        <div class="stat-value">{{overallStats.avgProgress}}%</div>
+        <div class="stat-label">Durchschnitt</div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="stat-card">
+      <ion-card-content>
+        <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+        <div class="stat-value">{{overallStats.completedHabits}}</div>
+        <div class="stat-label">Abgeschlossen</div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="stat-card">
+      <ion-card-content>
+        <ion-icon name="list-outline" color="medium"></ion-icon>
+        <div class="stat-value">{{overallStats.totalHabits}}</div>
+        <div class="stat-label">Gesamt</div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Wöchentliche Fortschritte -->
+  <ion-card class="progress-card">
     <ion-card-header>
-      <ion-card-title>Gewohnheiten Übersicht</ion-card-title>
+      <ion-card-title>Wöchentliche Aktivität</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <div class="stats-container">
-        <div *ngFor="let stat of stats" class="stat-bar">
-          <div class="stat-info">
-            <span>{{stat.name}}</span>
-            <span>{{stat.progress}}%</span>
+      <div class="progress-container">
+        <div *ngFor="let habit of weeklyProgress" class="progress-item">
+          <div class="progress-header">
+            <span class="habit-name">{{habit.name}}</span>
+            <span class="progress-value" [style.color]="habit.color">
+              {{habit.weeklyRate}}%
+              <ion-icon 
+                [name]="habit.trend > 0 ? 'trending-up' : 'trending-down'"
+                [color]="habit.trend > 0 ? 'success' : 'danger'">
+              </ion-icon>
+            </span>
           </div>
           <div class="progress-bar">
             <div class="progress" 
-                 [style.width]="stat.progress + '%'"
-                 [style.background-color]="stat.color">
+                 [style.width]="habit.weeklyRate + '%'"
+                 [style.background-color]="habit.color">
             </div>
           </div>
         </div>
       </div>
     </ion-card-content>
   </ion-card>
-
-  <ion-list>
-    <ion-list-header>
-      <ion-label>Wöchentliche Aktivität</ion-label>
-    </ion-list-header>
-    
-    <ion-item>
-      <ion-label>
-        <h2>Lesen</h2>
-        <p>85% Erfolgsrate</p>
-      </ion-label>
-      <ion-note slot="end" color="success">+5%</ion-note>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>
-        <h2>Sport</h2>
-        <p>70% Erfolgsrate</p>
-      </ion-label>
-      <ion-note slot="end" color="warning">-2%</ion-note>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>
-        <h2>Meditation</h2>
-        <p>60% Erfolgsrate</p>
-      </ion-label>
-      <ion-note slot="end" color="success">+8%</ion-note>
-    </ion-item>
-  </ion-list>
 </ion-content>

@@ -183,3 +183,17 @@
       margin: 0;
     }
 }
+
+.confirm-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px; // Verringere den Abstand nach oben
+  position: relative;
+  top: -20px; // Verschiebe den Button nach oben
+}
+
+.confirm-button {
+  --padding-start: 24px;
+  --padding-end: 24px;
+  height: 48px;
+}

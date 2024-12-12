@@ -102,34 +102,39 @@ import { environment } from '../environments/environment';
 
   async createHabit(habitData: any) {
     try {
-      // Holen Sie den aktuellen Benutzer
       const { data: { user } } = await this.supabase.auth.getUser();
-      
+  
       if (!user) {
+        console.error('FEHLER: Kein Benutzer angemeldet');
         throw new Error('Benutzer nicht angemeldet');
       }
-
-      // Vollständige Habit-Daten mit Benutzer-ID
+  
       const completeHabitData = {
-        ...habitData,
+        name: habitData.name,
+        category_id: habitData.category, // Änderung hier
+        color: habitData.color,
+        duration: habitData.duration,
+        frequency: habitData.frequency,
+        custom_frequency: habitData.customFrequency,
+        notifications: habitData.notifications,
+        notification_time: habitData.notifications ? habitData.notificationTime : null,
         user_id: user.id,
         created_at: new Date().toISOString()
       };
-
-      // In Supabase speichern
+  
       const { data, error } = await this.supabase
         .from('habits')
         .insert(completeHabitData)
-        .select(); // Gibt die erstellte Gewohnheit zurück
-
+        .select();
+  
       if (error) {
         console.error('Fehler beim Erstellen der Gewohnheit:', error);
         throw error;
       }
-
+  
       return data;
     } catch (error) {
-      console.error('Fehler in createHabit:', error);
+      console.error('Unerwarteter Fehler in createHabit:', error);
       throw error;
     }
   }

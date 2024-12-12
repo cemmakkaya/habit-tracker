@@ -1,8 +1,8 @@
-<!-- src/app/tab1/tab1.page.html -->
 <ion-header [translucent]="true" class="ion-no-border">
   <ion-toolbar>
     <ion-title class="ion-text-center">
       MyHabitTracker
+      <div class="date-subtitle">{{ currentDate | date:'EEEE, d. MMMM yyyy' }}</div>
     </ion-title>
   </ion-toolbar>
   <ion-toolbar>
@@ -25,20 +25,20 @@
         <div class="stat">
           <ion-icon name="trophy-outline" color="warning"></ion-icon>
           <div class="stat-text">
-            <span class="stat-value">12</span>
+            <span class="stat-value">{{streakDays}}</span>
             <span class="stat-label">Tage Streak</span>
           </div>
         </div>
       </ion-card-content>
     </ion-card>
-    
+
     <ion-card class="summary-card">
       <ion-card-content>
         <div class="stat">
           <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
           <div class="stat-text">
-            <span class="stat-value">85%</span>
-            <span class="stat-label">Erledigt</span>
+            <span class="stat-value">{{todayCompletionPercentage}}%</span>
+            <span class="stat-label">Heute erledigt</span>
           </div>
         </div>
       </ion-card-content>
@@ -49,41 +49,41 @@
   <div class="habits-container">
     <ion-card *ngFor="let habit of getFilteredHabits()" 
           class="habit-card"
+          [class.completed-today]="habit.today_done"
           [style.border-left]="'4px solid ' + getCategoryColor(habit.category)"
           (click)="openHabitDetails(habit)">
-    <ion-card-content>
-    <div class="habit-header">
-    <div class="habit-title">
-      <div class="habit-checkbox" 
-          [class.checked]="habit.todayDone"
-          (click)="toggleTodayDone(habit, $event)">
-        <ion-icon name="checkmark"></ion-icon>
-      </div>
-      <div>
-        <h2>{{habit.name}}</h2>
-        <p class="category">{{habit.category}}</p>
-      </div>
-    </div>
-    <div class="streak-badge">
-      <ion-icon name="flame"></ion-icon>
-      {{habit.streak}}
-    </div>
-    </div>
+      <ion-card-content>
+        <div class="habit-header">
+          <div class="habit-title">
+            <div class="habit-checkbox" 
+                [class.checked]="habit.today_done"
+                (click)="toggleTodayDone(habit, $event)">
+              <ion-icon name="checkmark"></ion-icon>
+            </div>
+            <div>
+              <h2>{{habit.name}}</h2>
+              <p class="category">{{habit.category}}</p>
+            </div>
+          </div>
+          <div class="streak-badge">
+            <ion-icon name="flame"></ion-icon>
+            {{habit.streak}}
+          </div>
+        </div>
 
-    <div class="progress-container">
-    <ion-progress-bar [value]="habit.progress/100" [style.--progress-background]="habit.color"></ion-progress-bar>
-    <span class="progress-text">{{habit.progress}}%</span>
-    </div>
+        <div class="progress-container">
+          <ion-progress-bar [value]="habit.progress/100" [style.--progress-background]="habit.color"></ion-progress-bar>
+          <span class="progress-text">{{habit.progress}}%</span>
+        </div>
 
-    <!-- Abschluss-Button -->
-    <ion-button 
-    *ngIf="habit.progress >= 100 && !habit.isCompleted"
-    (click)="completeHabit(habit, $event)"
-    expand="block"
-    class="complete-button">
-    Gewohnheit abschließen
-    </ion-button>
-    </ion-card-content>
+        <ion-button 
+          *ngIf="habit.progress >= 100 && !habit.is_completed"
+          (click)="completeHabit(habit, $event)"
+          expand="block"
+          class="complete-button">
+          Gewohnheit abschließen
+        </ion-button>
+      </ion-card-content>
     </ion-card>
   </div>
 

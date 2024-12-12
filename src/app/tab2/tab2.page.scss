@@ -1,74 +1,94 @@
-// src/app/tab2/tab2.page.scss
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
 .stat-card {
-    text-align: center;
-    border-radius: 15px;
-    box-shadow: none;
-    background: var(--ion-color-light);
-  
+  margin: 0;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+
+  ion-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    gap: 8px;
+
+    ion-icon {
+      font-size: 24px;
+    }
+
     .stat-value {
       font-size: 24px;
-      font-weight: bold;
-      color: var(--ion-color-primary);
-      margin-bottom: 5px;
+      font-weight: 700;
     }
-  
+
     .stat-label {
       font-size: 12px;
       color: var(--ion-color-medium);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
   }
-  
-  .chart-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px 0;
-    overflow-x: auto;
-  }
-  
-  ion-card {
-    border-radius: 15px;
-    margin: 10px 0;
-    
-    ion-card-header {
-      padding-bottom: 0;
-    }
-  
+}
+
+.progress-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin: 0;
+
+  ion-card-header {
+    padding: 16px;
+
     ion-card-title {
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 600;
     }
   }
-  
-  ion-list {
-    background: transparent;
-    padding: 0;
-    
-    ion-list-header {
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--ion-color-medium);
+}
+
+.progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.progress-item {
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+
+    .habit-name {
+      font-weight: 500;
     }
-  
-    ion-item {
-      --padding-start: 0;
-      --inner-padding-end: 0;
-      
-      h2 {
+
+    .progress-value {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 600;
+
+      ion-icon {
         font-size: 16px;
-        font-weight: 500;
-      }
-  
-      p {
-        font-size: 14px;
-        color: var(--ion-color-medium);
-      }
-  
-      ion-note {
-        font-size: 14px;
-        font-weight: 500;
       }
     }
   }
-  
+
+  .progress-bar {
+    height: 8px;
+    background: var(--ion-color-light);
+    border-radius: 4px;
+    overflow: hidden;
+
+    .progress {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+  }
+}

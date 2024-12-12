@@ -3,6 +3,7 @@ import { IonicModule, ModalController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Camera, CameraResultType } from '@capacitor/camera';
+import { VoiceRecorder } from 'capacitor-voice-recorder';
 
 @Component({
   selector: 'app-habit-documentation',
@@ -16,9 +17,13 @@ export class HabitDocumentationPage {
   
   selectedType: 'text' | 'image' | 'audio' = 'text';
   
+  isRecording = false;
+  audioRecorded = false;
+
   entry = {
     text: '',
     imagePath: '',
+    audioPath: ''
   };
 
   constructor(private modalCtrl: ModalController) {}
@@ -34,8 +39,28 @@ export class HabitDocumentationPage {
       this.entry.imagePath = image.base64String 
         ? `data:image/jpeg;base64,${image.base64String}` 
         : '';
+      this.selectedType = 'image';
     } catch (error) {
       console.error('Fehler beim Aufnehmen des Fotos:', error);
+    }
+  }
+
+  async toggleRecording() {
+    try {
+      if (!this.isRecording) {
+        await VoiceRecorder.startRecording();
+        this.isRecording = true;
+        this.audioRecorded = false;
+      } else {
+        const recording = await VoiceRecorder.stopRecording();
+        this.isRecording = false;
+        this.audioRecorded = true;
+        this.entry.audioPath = recording.value.recordDataBase64 || '';
+        this.selectedType = 'audio';
+      }
+    } catch (error) {
+      console.error('Fehler bei der Audioaufnahme:', error);
+      this.isRecording = false;
     }
   }
 
@@ -46,7 +71,7 @@ export class HabitDocumentationPage {
       case 'image':
         return !!this.entry.imagePath;
       case 'audio':
-        return false; // Implementieren Sie Audio-Aufnahme
+        return !!this.entry.audioPath;
       default:
         return false;
     }
