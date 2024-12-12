@@ -11,7 +11,6 @@
 
 <ion-content>
   <div class="documentation-container">
-    <!-- Type Selection -->
     <div class="type-selector">
       <div class="type-option" 
            [class.selected]="selectedType === 'text'"
@@ -32,9 +31,7 @@
       </div>
     </div>
 
-    <!-- Input Area -->
     <div [ngSwitch]="selectedType">
-      <!-- Text Input -->
       <div *ngSwitchCase="'text'">
         <ion-item>
           <ion-textarea 
@@ -45,7 +42,6 @@
         </ion-item>
       </div>
 
-      <!-- Photo Input -->
       <div *ngSwitchCase="'image'">
         <ng-container *ngIf="!entry.imagePath">
           <ion-button (click)="takePicture()">
@@ -60,7 +56,6 @@
         </div>
       </div>
 
-      <!-- Audio Input -->
       <div *ngSwitchCase="'audio'">
         <ion-button 
           (click)="toggleRecording()"

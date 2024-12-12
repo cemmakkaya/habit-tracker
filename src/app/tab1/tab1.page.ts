@@ -130,7 +130,6 @@ export class Tab1Page implements OnInit {
       ? this.habits.filter(habit => habit.is_completed)
       : this.habits.filter(habit => !habit.is_completed);
   
-    // Sortiere die Habits: erledigte nach unten
     return habits.sort((a, b) => {
       if (a.today_done === b.today_done) return 0;
       return a.today_done ? 1 : -1;

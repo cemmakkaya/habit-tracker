@@ -10,9 +10,6 @@ export const routes: Routes = [
     loadComponent: () => import('./modals/add-habit/add-habit.page').then(m => m.AddHabitPage)
   },
   {
-    path: 'add-category',
-    loadComponent: () => import('./modals/add-category/add-category.page').then(m => m.AddCategoryPage)
-  },  {
     path: 'habit-details',
     loadComponent: () => import('./modals/habit-details/habit-details.page').then( m => m.HabitDetailsPage)
   },

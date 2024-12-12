@@ -33,7 +33,7 @@ export class Tab2Page implements OnInit {
     maxStreak: 0,
     completedHabits: 0,
   };
-  
+
   weeklyProgress: {
     name: string;
     progress: number;
@@ -41,8 +41,6 @@ export class Tab2Page implements OnInit {
     color: string;
     trend: number;
   }[] = [];
-  
-  weeklyProgress: any[] = [];
 
   async ngOnInit() {
     await this.loadHabits();
@@ -62,7 +60,6 @@ export class Tab2Page implements OnInit {
   }
 
   calculateStats() {
-    // Gesamtstatistiken berechnen
     this.overallStats.totalHabits = this.habits.length;
     this.overallStats.avgProgress = Math.round(
       this.habits.reduce((sum, habit) => sum + habit.progress, 0) / this.habits.length
@@ -74,7 +71,6 @@ export class Tab2Page implements OnInit {
       habit => habit.progress === 100
     ).length;
 
-    // Wöchentliche Fortschritte berechnen
     this.weeklyProgress = this.habits.map(habit => {
       const lastWeekEntries = habit.entries?.filter(entry => {
         const entryDate = new Date(entry.date);
@@ -91,7 +87,7 @@ export class Tab2Page implements OnInit {
         progress: habit.progress,
         weeklyRate,
         color: habit.color,
-        trend: weeklyRate - habit.progress // Positive = Verbesserung
+        trend: weeklyRate - habit.progress 
       };
     });
   }

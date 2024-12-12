@@ -64,10 +64,8 @@ export class Tab3Page implements OnInit {
           role: 'destructive',
           handler: async () => {
             try {
-              // Löschen aller gespeicherten Daten
               await Preferences.clear();
               
-              // Zurücksetzen der Settings
               this.settings = {
                 notifications: true,
                 darkMode: false,
@@ -76,10 +74,8 @@ export class Tab3Page implements OnInit {
                 language: 'de'
               };
               
-              // Speichern der Standard-Settings
               await this.saveSettings();
-              
-              // Benachrichtigung anzeigen
+         
               const toast = await this.toastController.create({
                 message: 'App wurde erfolgreich zurückgesetzt',
                 duration: 2000,
@@ -87,7 +83,6 @@ export class Tab3Page implements OnInit {
               });
               await toast.present();
 
-              // Optional: Neu laden der App
               window.location.reload();
             } catch (error) {
               console.error('Fehler beim Zurücksetzen:', error);

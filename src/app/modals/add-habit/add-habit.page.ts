@@ -12,8 +12,8 @@ import { Preferences } from '@capacitor/preferences';
   imports: [IonicModule, CommonModule, FormsModule]
 })
 export class AddHabitPage implements OnInit {
-  categories: any[] = []; // Deine Kategorienliste
-  selectedCategory: any; // Die ausgewählte Kategorie
+  categories: any[] = []; 
+  selectedCategory: any; 
   
   habitName: string = '';
   color: string = '#4CAF50';
