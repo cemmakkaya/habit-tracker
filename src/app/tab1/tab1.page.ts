@@ -1,4 +1,3 @@
-// src/app/tab1/tab1.page.ts
 import { Component } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
