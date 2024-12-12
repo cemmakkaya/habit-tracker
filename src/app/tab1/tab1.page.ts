@@ -16,38 +16,7 @@ import {
   checkmark, 
   trophyOutline 
 } from 'ionicons/icons';
-import { Preferences } from '@capacitor/preferences';
-
-interface HabitEntry {
-  date: Date;
-  type: 'text' | 'image' | 'audio';
-  content: string;
-}
-
-interface Habit {
-  name: string;
-  category: string;
-  progress: number;
-  streak: number;
-  color: string;
-  todayDone: boolean;
-  entries: HabitEntry[];
-  isCompleted?: boolean;
-  
-  // Neue Eigenschaften
-  duration?: number;
-  frequency?: 'daily' | 'weekly' | 'custom';
-  customFrequency?: number;
-  notifications?: boolean;
-  notificationTime?: string;
-}
-
-interface DocumentationData {
-  type: 'text' | 'image' | 'audio';
-  content?: string;
-  imagePath?: string;
-  audioPath?: string;
-}
+import { SupabaseService } from '../../services/supabase.service'; // Importieren Sie den Supabase-Service
 
 @Component({
   selector: 'app-tab1',
@@ -64,30 +33,14 @@ interface DocumentationData {
 })
 export class Tab1Page implements OnInit {
   selectedSegment = 'all';
-  
-  habits: Habit[] = [
-    { 
-      name: 'Lesen', 
-      category: 'Bildung', 
-      progress: 60, 
-      streak: 5,
-      color: '#4CAF50',
-      todayDone: false,
-      entries: []
-    },
-    { 
-      name: 'Sport', 
-      category: 'Gesundheit', 
-      progress: 80, 
-      streak: 12,
-      color: '#2196F3',
-      todayDone: false,
-      entries: []
-    }
-  ];
+  habits: any[] = [];
+  categories: any[] = [];
 
-  constructor(private modalCtrl: ModalController, private alertController: AlertController) {
-    
+  constructor(
+    private modalCtrl: ModalController, 
+    private alertController: AlertController,
+    private supabaseService: SupabaseService // Fügen Sie den Supabase-Service hinzu
+  ) {
     addIcons({
       add,
       'checkmark-circle-outline': checkmarkCircleOutline,
@@ -101,43 +54,42 @@ export class Tab1Page implements OnInit {
   }
 
   async ngOnInit() {
-    await this.loadHabits();
+    try {
+      await this.loadCategories();
+      await this.loadHabits();
+    } catch (error) {
+      console.error('Fehler beim Laden:', error);
+    }
+  }
+
+  async loadCategories() {
+    try {
+      this.categories = await this.supabaseService.getCategories();
+    } catch (error) {
+      console.error('Fehler beim Laden der Kategorien:', error);
+    }
   }
 
   async loadHabits() {
     try {
-      const storedHabits = await Preferences.get({ key: 'habits' });
-      if (storedHabits.value) {
-        this.habits = JSON.parse(storedHabits.value);
-      }
+      this.habits = await this.supabaseService.getHabits();
     } catch (error) {
-      console.error('Error loading habits:', error);
+      console.error('Fehler beim Laden der Gewohnheiten:', error);
     }
   }
 
-  async saveHabits() {
-    try {
-      await Preferences.set({
-        key: 'habits',
-        value: JSON.stringify(this.habits)
-      });
-    } catch (error) {
-      console.error('Error saving habits:', error);
-    }
-  }
-
-  getFilteredHabits(): Habit[] {
+  getFilteredHabits(): any[] {
     switch(this.selectedSegment) {
       case 'inProgress':
-        return this.habits.filter(habit => !habit.todayDone && !habit.isCompleted);
+        return this.habits.filter(habit => !habit.today_done && !habit.is_completed);
       case 'completed':
-        return this.habits.filter(habit => habit.isCompleted);
+        return this.habits.filter(habit => habit.is_completed);
       default:
-        return this.habits.filter(habit => !habit.isCompleted);
+        return this.habits.filter(habit => !habit.is_completed);
     }
   }
 
-  async openHabitDetails(habit: Habit) {
+  async openHabitDetails(habit: any) {
     try {
       const modal = await this.modalCtrl.create({
         component: HabitDetailsPage,
@@ -147,11 +99,11 @@ export class Tab1Page implements OnInit {
       });
       await modal.present();
     } catch (error) {
-      console.error('Error opening habit details:', error);
+      console.error('Fehler beim Öffnen der Habit-Details:', error);
     }
   }
 
-  async completeHabit(habit: Habit, event: Event) {
+  async completeHabit(habit: any, event: Event) {
     event.stopPropagation();
     
     const alert = await this.alertController.create({
@@ -165,8 +117,17 @@ export class Tab1Page implements OnInit {
         {
           text: 'Abschließen',
           handler: async () => {
-            habit.isCompleted = true;
-            await this.saveHabits();
+            try {
+              await this.supabaseService.updateHabit(habit.id, { is_completed: true });
+              
+              // Lokale Liste aktualisieren
+              const index = this.habits.findIndex(h => h.id === habit.id);
+              if (index !== -1) {
+                this.habits[index].is_completed = true;
+              }
+            } catch (error) {
+              console.error('Fehler beim Abschließen der Gewohnheit:', error);
+            }
           }
         }
       ]
@@ -174,11 +135,11 @@ export class Tab1Page implements OnInit {
     await alert.present();
   }
 
-  async toggleTodayDone(habit: Habit, event: Event) {
+  async toggleTodayDone(habit: any, event: Event) {
     try {
       event.stopPropagation();
   
-      if (habit.todayDone) {
+      if (habit.today_done) {
         // Bereits erledigt: Lösch-Bestätigung
         const alert = await this.alertController.create({
           header: 'Eintrag löschen',
@@ -192,20 +153,24 @@ export class Tab1Page implements OnInit {
               text: 'Löschen',
               role: 'destructive',
               handler: async () => {
-                habit.todayDone = false;
-                habit.streak = Math.max(0, habit.streak - 1);
-                
-                // Lösche den Eintrag für heute
-                const today = new Date().toDateString();
-                habit.entries = habit.entries.filter(entry => 
-                  new Date(entry.date).toDateString() !== today
-                );
-                
-                // Reduziere den Fortschritt um einen Schritt
-                const progressStep = 100 / (habit.duration || 30);
-                habit.progress = Math.round(Math.max(0, habit.progress - progressStep));
-  
-                await this.saveHabits();
+                try {
+                  // Eintrag löschen und Habit aktualisieren
+                  await this.supabaseService.createHabitEntry(habit.id);
+                  
+                  const updatedHabit = await this.supabaseService.updateHabit(habit.id, {
+                    today_done: false,
+                    streak: Math.max(0, habit.streak - 1),
+                    progress: Math.max(0, habit.progress - (100 / (habit.duration || 30)))
+                  });
+
+                  // Lokale Liste aktualisieren
+                  const index = this.habits.findIndex(h => h.id === habit.id);
+                  if (index !== -1) {
+                    this.habits[index] = updatedHabit[0];
+                  }
+                } catch (error) {
+                  console.error('Fehler beim Löschen des Eintrags:', error);
+                }
               }
             }
           ]
@@ -225,30 +190,37 @@ export class Tab1Page implements OnInit {
       });
   
       await modal.present();
-      const { data, role } = await modal.onWillDismiss<DocumentationData>();
+      const { data, role } = await modal.onWillDismiss();
   
       if (role === 'confirm' && data) {
-        habit.todayDone = true;
-        habit.streak++;
-        
-        if (!habit.entries) {
-          habit.entries = [];
+        try {
+          // Habit-Eintrag erstellen
+          await this.supabaseService.createHabitEntry({
+            habit_id: habit.id,
+            type: data.type,
+            content: data.type === 'text' ? data.content :
+                    data.type === 'image' ? data.imagePath :
+                    data.audioPath
+          });
+
+          // Habit aktualisieren
+          const updatedHabit = await this.supabaseService.updateHabit(habit.id, {
+            today_done: true,
+            streak: (habit.streak || 0) + 1,
+            progress: Math.min(100, (habit.progress || 0) + (100 / (habit.duration || 30)))
+          });
+
+          // Lokale Liste aktualisieren
+          const index = this.habits.findIndex(h => h.id === habit.id);
+          if (index !== -1) {
+            this.habits[index] = updatedHabit[0];
+          }
+        } catch (error) {
+          console.error('Fehler beim Erstellen des Eintrags:', error);
         }
-        
-        habit.entries.unshift({
-          date: new Date(),
-          type: data.type,
-          content: data.type === 'text' ? data.content! : 
-                  data.type === 'image' ? data.imagePath! :
-                  data.audioPath!
-        });
-  
-        // Rufe updateHabitProgress auf, um den Fortschritt schrittweise zu aktualisieren
-        await this.updateHabitProgress(habit);
-        await this.saveHabits();
       }
     } catch (error) {
-      console.error('Error in toggleTodayDone:', error);
+      console.error('Fehler in toggleTodayDone:', error);
     }
   }
 
@@ -264,86 +236,36 @@ export class Tab1Page implements OnInit {
       const { data, role } = await modal.onWillDismiss();
       
       if (role === 'confirm' && data) {
-        const newHabit = {
-          name: data.name,
-          category: data.category,
-          progress: 0,
-          streak: 0,
-          color: data.color, 
-          todayDone: false,
-          entries: [],
-          isCompleted: false,
-          duration: data.duration,
-          frequency: data.frequency,
-          customFrequency: data.customFrequency,
-          notifications: data.notifications,
-          notificationTime: data.notificationTime
-        };
-  
-        // Fortschrittsberechnung basierend auf Dauer und Häufigkeit
-        this.calculateInitialProgress(newHabit);
-  
-        this.habits.push(newHabit);
-        await this.saveHabits();
+        try {
+          // Neue Gewohnheit in Supabase erstellen
+          const newHabit = await this.supabaseService.createHabit({
+            name: data.name,
+            category: data.category,
+            color: data.color,
+            duration: data.duration,
+            frequency: data.frequency,
+            custom_frequency: data.customFrequency,
+            notifications: data.notifications,
+            notification_time: data.notificationTime,
+            progress: 0,
+            streak: 0,
+            today_done: false,
+            is_completed: false
+          });
+
+          // Lokale Liste aktualisieren
+          this.habits.push(newHabit[0]);
+        } catch (error) {
+          console.error('Fehler beim Erstellen der Gewohnheit:', error);
+        }
       }
     } catch (error) {
-      console.error('Error opening add habit modal:', error);
-    }
-  }
-
-  calculateInitialProgress(habit: Habit) {
-    switch(habit.frequency) {
-      case 'daily':
-        habit.progress = 0;
-        break;
-      case 'weekly':
-        habit.progress = habit.customFrequency 
-          ? Math.round((habit.customFrequency / 7) * 100)
-          : 0;
-        break;
-      case 'custom':
-        habit.progress = habit.customFrequency && habit.duration
-          ? Math.round((habit.customFrequency / habit.duration) * 100)
-          : 0;
-        break;
-      default:
-        habit.progress = 0;
-    }
-  }
-
-  async updateHabitProgress(habit: Habit) {
-    try {
-      // Überprüfen, ob die Gewohnheit eine Dauer hat
-      if (!habit.duration) {
-        habit.duration = 30; // Standardwert, falls nicht definiert
-      }
-  
-      // Schrittweise Fortschrittsberechnung
-      const progressStep = 100 / habit.duration;
-      
-      // Zähle die Einträge für den aktuellen Tag
-      const today = new Date().toDateString();
-      const todayEntries = habit.entries.filter(entry => 
-        new Date(entry.date).toDateString() === today
-      );
-  
-      // Erhöhe den Fortschritt um einen Schritt, wenn ein Eintrag existiert
-      if (todayEntries.length > 0) {
-        habit.progress = Math.round(Math.min(100, habit.progress + progressStep));
-      }
-  
-      await this.saveHabits();
-    } catch (error) {
-      console.error('Error updating habit progress:', error);
+      console.error('Fehler beim Öffnen des Habit-Modals:', error);
     }
   }
 
   getCategoryColor(categoryName: string): string {
-    const categories: Record<string, string> = {
-      'Bildung': '#4CAF50',
-      'Sport': '#2196F3',
-      'Wellness': '#9C27B0'
-    };
-    return categories[categoryName] || '#000000';
+    const category = this.categories.find(cat => cat.name === categoryName);
+    return category ? category.color : '#000000';
   }
 }

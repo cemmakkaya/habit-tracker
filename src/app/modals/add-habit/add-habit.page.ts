@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IonicModule, ModalController, AlertController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AddCategoryPage } from '../add-category/add-category.page';
+import { SupabaseService } from '../../../services/supabase.service';
 
 @Component({
   selector: 'app-add-habit',
@@ -12,42 +11,45 @@ import { AddCategoryPage } from '../add-category/add-category.page';
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule]
 })
-export class AddHabitPage {
-  public habitName: string = '';
-  public category: string = '';
-  public color: string = '#4CAF50';
+export class AddHabitPage implements OnInit {
+  categories: any[] = [];
   
-  public duration: number = 30;
-  public frequency: 'daily' | 'weekly' | 'custom' = 'daily';
-  public customFrequency: number = 1;
+  habitName: string = '';
+  category: string = '';
+
+  selectedCategory: any = null;
+  color: string = '#4CAF50';
   
-  public notifications: boolean = false;
-  public notificationTime: string = '08:00';
+  duration: number = 30;
+  frequency: 'daily' | 'weekly' | 'custom' = 'daily';
+  customFrequency: number = 1;
   
-  public categories = [
-    { name: 'Bildung', color: '#4CAF50' },
-    { name: 'Gesundheit', color: '#2196F3' },
-    { name: 'Wellness', color: '#9C27B0' },
-    { name: 'Produktivität', color: '#FF9800' }
-  ];
+  notifications: boolean = false;
+  notificationTime: string = '08:00';
 
   constructor(
     private modalCtrl: ModalController,
     private alertController: AlertController,
-    private router: Router
+    private supabaseService: SupabaseService
   ) {}
 
-  public selectCategory(cat: { name: string, color: string }): void {
-    this.category = cat.name;
-    this.color = cat.color;
+  async ngOnInit() {
+    await this.loadCategories();
   }
 
-  public navigateToCategories() {
-    this.modalCtrl.dismiss(); // Schließt das aktuelle Modal
-    this.router.navigate(['/tabs/categories']); // Navigiert zur Kategorien-Seite
+  async loadCategories() {
+    try {
+      this.categories = await this.supabaseService.getCategories();
+    } catch (error) {
+      console.error('Fehler beim Laden der Kategorien:', error);
+    }
   }
 
-  public async openNewCategoryModal() {
+  openAddCategoryPage() {
+    this.openNewCategoryModal();
+  }
+
+  async openNewCategoryModal() {
     const alert = await this.alertController.create({
       header: 'Neue Kategorie',
       inputs: [
@@ -64,9 +66,18 @@ export class AddHabitPage {
         },
         {
           text: 'Erstellen',
-          handler: (data) => {
+          handler: async (data) => {
             if (data.categoryName) {
-              this.createNewCategory(data.categoryName);
+              try {
+                const newCategory = await this.supabaseService.createCategory({
+                  name: data.categoryName,
+                  color: this.generateRandomColor()
+                });
+                this.categories.push(newCategory[0]);
+                this.selectCategory(newCategory[0]);
+              } catch (error) {
+                console.error('Fehler beim Erstellen der Kategorie:', error);
+              }
             }
           }
         }
@@ -76,16 +87,9 @@ export class AddHabitPage {
     await alert.present();
   }
 
-  private createNewCategory(name: string) {
-    const randomColor = this.generateRandomColor();
-    
-    const newCategory = { 
-      name: name, 
-      color: randomColor 
-    };
-
-    this.categories.push(newCategory);
-    this.selectCategory(newCategory);
+  selectCategory(category: any) {
+    this.selectedCategory = category;
+    this.color = category.color;
   }
 
   private generateRandomColor(): string {
@@ -97,29 +101,30 @@ export class AddHabitPage {
     return color;
   }
 
-  public isFormValid(): boolean {
+  isFormValid(): boolean {
     return !!this.habitName && 
-           !!this.category && 
+           !!this.selectedCategory && 
            this.duration > 0;
   }
 
-  public confirm(): void {
+  confirm() {
     if (this.isFormValid()) {
       const habitData = {
         name: this.habitName,
-        category: this.category,
+        category: this.selectedCategory.id,
         color: this.color,
         duration: this.duration,
         frequency: this.frequency,
-        customFrequency: this.customFrequency,
+        custom_frequency: this.customFrequency,
         notifications: this.notifications,
-        notificationTime: this.notifications ? this.notificationTime : null
+        notification_time: this.notifications ? this.notificationTime : null
       };
+      
       this.modalCtrl.dismiss(habitData, 'confirm');
     }
   }
 
-  public dismiss(): void {
+  dismiss() {
     this.modalCtrl.dismiss(null, 'cancel');
   }
 }
