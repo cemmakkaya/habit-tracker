@@ -19,7 +19,6 @@ export class HabitDocumentationPage {
   entry = {
     text: '',
     imagePath: '',
-    audioPath: ''
   };
 
   constructor(private modalCtrl: ModalController) {}

@@ -134,8 +134,6 @@ import { environment } from '../environments/environment';
     }
   }
 
-
-
   async updateHabit(habitId: string, updates: any) {
     const { data, error } = await this.supabase
       .from('habits')
