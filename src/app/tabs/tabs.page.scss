@@ -86,22 +86,6 @@ ion-tab-bar {
         opacity: 1;
         font-weight: 600;
       }
-  
-      // Pulse Animation
-      &::after {
-        content: '';
-        position: absolute;
-        top: 15px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 4px;
-        height: 4px;
-        background: var(--ion-color-primary);
-        border-radius: 50%;
-        animation: pulse 2s infinite;
-      }
-
-
     
   
     // Hover Effekt

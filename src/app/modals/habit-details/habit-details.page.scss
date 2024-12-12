@@ -1,0 +1,118 @@
+// src/app/modals/habit-details/habit-details.page.scss
+.hero-section {
+    padding: 24px;
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .streak-container, .progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .streak-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: white;
+    padding: 12px 20px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  
+    ion-icon {
+      font-size: 24px;
+    }
+  
+    .streak-count {
+      font-size: 24px;
+      font-weight: bold;
+    }
+  }
+  
+  .progress-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  
+    .progress-text {
+      font-size: 18px;
+      font-weight: bold;
+    }
+  }
+  
+  .streak-label, .progress-label {
+    color: var(--ion-color-medium);
+    font-size: 14px;
+  }
+  
+  .custom-segment {
+    background: var(--ion-color-light);
+    border-radius: 8px;
+    padding: 4px;
+  
+    ion-segment-button {
+      --indicator-color: var(--ion-color-primary);
+      --indicator-height: 100%;
+      --border-radius: 6px;
+      min-height: 40px;
+    }
+  }
+  
+  ion-item-divider {
+    --background: transparent;
+    --padding-start: 0;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--ion-color-medium);
+  }
+  
+  ion-item {
+    --padding-start: 0;
+    margin-bottom: 8px;
+  
+    h3 {
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+  
+    p {
+      color: var(--ion-color-medium);
+    }
+  }
+  
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    text-align: center;
+  
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+  
+      .stat-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: var(--ion-color-primary);
+      }
+  
+      .stat-label {
+        font-size: 14px;
+        color: var(--ion-color-medium);
+      }
+    }
+  }
+  

@@ -1,0 +1,21 @@
+ion-card {
+    --ion-card-background: #f8f9fa;
+    --ion-card-border-radius: 8px;
+    --ion-card-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  ion-card-title {
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+  
+  ion-item {
+    --inner-padding-end: 0;
+  }
+  
+  ion-button {
+    --background: #3880ff;
+    --background-activated: #3171e0;
+    --background-focused: #3171e0;
+    --background-hover: #3171e0;
+  }

@@ -50,7 +50,7 @@
 
   <!-- Gewohnheiten Liste -->
   <div class="habits-container">
-      <ion-card *ngFor="let habit of habits" class="habit-card" [style.border-left]="'4px solid ' + habit.color">
+      <ion-card *ngFor="let habit of habits" class="habit-card" [style.border-left]="'4px solid ' + getCategoryColor" (click)="openHabitDetails(habit)">
         <ion-card-content>
           <div class="habit-header">
             <div class="habit-title">
@@ -94,7 +94,7 @@
   <!-- Floating Action Button -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="openAddHabitModal()">
-      <ion-icon name="add"></ion-icon>
+      <ion-icon name="add" size="large"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>

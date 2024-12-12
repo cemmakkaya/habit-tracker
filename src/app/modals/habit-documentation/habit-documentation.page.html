@@ -1,0 +1,101 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{habit.name}} dokumentieren</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="documentation-container">
+    <!-- Type Selection -->
+    <div class="type-selector">
+      <div class="type-option" 
+           [class.selected]="selectedType === 'text'"
+           (click)="selectedType = 'text'">
+        <div class="icon-container">
+          <ion-icon name="create-outline"></ion-icon>
+        </div>
+        <span>Text</span>
+      </div>
+
+      <div class="type-option"
+           [class.selected]="selectedType === 'photo'"
+           (click)="selectedType = 'photo'">
+        <div class="icon-container">
+          <ion-icon name="camera-outline"></ion-icon>
+        </div>
+        <span>Foto</span>
+      </div>
+
+      <div class="type-option"
+           [class.selected]="selectedType === 'audio'"
+           (click)="selectedType = 'audio'">
+        <div class="icon-container">
+          <ion-icon name="mic-outline"></ion-icon>
+        </div>
+        <span>Audio</span>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="input-area" [ngSwitch]="selectedType">
+      <!-- Text Input -->
+      <div *ngSwitchCase="'text'" class="text-input-container">
+        <ion-textarea
+          [(ngModel)]="entry.text"
+          placeholder="Beschreibe deinen Fortschritt..."
+          [rows]="6"
+          class="custom-textarea">
+        </ion-textarea>
+      </div>
+
+      <!-- Photo Input -->
+      <div *ngSwitchCase="'photo'" class="photo-input-container">
+        <ng-container *ngIf="!entry.photoPath">
+          <div class="photo-placeholder" (click)="takePicture()">
+            <ion-icon name="camera"></ion-icon>
+            <p>Tippe um ein Foto aufzunehmen</p>
+          </div>
+        </ng-container>
+        <div *ngIf="entry.photoPath" class="photo-preview">
+          <img [src]="entry.photoPath" alt="Preview">
+          <ion-button fill="clear" (click)="takePicture()">
+            <ion-icon slot="start" name="camera"></ion-icon>
+            Neues Foto
+          </ion-button>
+        </div>
+      </div>
+
+      <!-- Audio Input -->
+      <div *ngSwitchCase="'audio'" class="audio-input-container">
+        <div class="audio-button-container">
+          <ion-button 
+            (click)="toggleRecording()" 
+            [color]="isRecording ? 'danger' : 'primary'"
+            class="record-button">
+            <ion-icon [name]="isRecording ? 'stop' : 'mic'"></ion-icon>
+            {{isRecording ? 'Aufnahme stoppen' : (audioRecorded ? 'Neu aufnehmen' : 'Aufnahme starten')}}
+          </ion-button>
+          <div *ngIf="isRecording" class="recording-indicator">
+            Aufnahme läuft...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-container">
+      <ion-button 
+        expand="block" 
+        (click)="confirm()"
+        [disabled]="!canConfirm()"
+        class="confirm-button">
+        Eintrag bestätigen
+      </ion-button>
+    </div>
+  </div>
+</ion-content>
+

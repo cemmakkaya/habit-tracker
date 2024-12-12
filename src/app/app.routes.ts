@@ -12,5 +12,13 @@ export const routes: Routes = [
   {
     path: 'add-category',
     loadComponent: () => import('./modals/add-category/add-category.page').then(m => m.AddCategoryPage)
+  },  {
+    path: 'habit-details',
+    loadComponent: () => import('./modals/habit-details/habit-details.page').then( m => m.HabitDetailsPage)
+  },
+  {
+    path: 'habit-documentation',
+    loadComponent: () => import('./modals/habit-documentation/habit-documentation.page').then( m => m.HabitDocumentationPage)
   }
+
 ];

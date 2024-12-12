@@ -11,17 +11,27 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-item>
-    <ion-label position="stacked">Name der Kategorie</ion-label>
-    <ion-input [(ngModel)]="category.name" placeholder="z.B. Fitness"></ion-input>
-  </ion-item>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Kategorie hinzufügen</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="stacked">Name der Kategorie</ion-label>
+        <ion-input [(ngModel)]="category.name" placeholder="z.B. Fitness"></ion-input>
+      </ion-item>
 
-  <ion-item>
-    <ion-label position="stacked">Farbe</ion-label>
-    <ion-input type="color" [(ngModel)]="category.color"></ion-input>
-  </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Farbe</ion-label>
+        <div class="color-options">
+          <button *ngFor="let color of colors" [ngStyle]="{'background-color': color}" (click)="selectColor(color)" [class.selected]="category.color === color"></button>
+        </div>
+      </ion-item>
 
-  <ion-button expand="block" class="ion-margin-top" (click)="confirm()" [disabled]="!category.name.trim()">
-    Kategorie hinzufügen
-  </ion-button>
+      <ion-button expand="block" class="ion-margin-top" (click)="confirm()" [disabled]="!category.name.trim()">
+        <ion-icon name="add" slot="start"></ion-icon>
+        Kategorie hinzufügen
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

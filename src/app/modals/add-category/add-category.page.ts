@@ -14,8 +14,21 @@ import { FormsModule } from '@angular/forms';
 export class AddCategoryPage {
   category = {
     name: '',
-    color: '#4CAF50'
+    color: ''
   };
+
+  colors = [
+    '#F3FF33', // Gelb
+    '#FF8C33', // Orange
+    '#ee2c2c', // Rot
+    '#FF33FF', // Magenta
+    '#FF33A8', // Pink
+    '#8A33FF', // Lila
+    '#3357FF', // Blau
+    '#33FFF3', // Türkis
+    '#33FF57', // Grün
+    '#8AFF33', // Hellgrün
+  ];
 
   constructor(private modalCtrl: ModalController) {}
 
@@ -27,5 +40,11 @@ export class AddCategoryPage {
     if (this.category.name.trim()) {
       this.modalCtrl.dismiss(this.category, 'confirm');
     }
+  }
+
+  selectColor(color: string) {
+
+    this.category.color = color;
+
   }
 }
