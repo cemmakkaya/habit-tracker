@@ -19,3 +19,71 @@ ion-card {
     --background-focused: #3171e0;
     --background-hover: #3171e0;
   }
+
+  // add-habit.page.scss
+.add-habit-container {
+    padding: 16px;
+  }
+  
+  .category-selector {
+    margin: 16px 0;
+  
+    h2 {
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+  
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+  
+    .category-item {
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+  
+      span {
+        color: var(--ion-color-dark);
+        font-size: 14px;
+      }
+  
+      &.selected {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  .category-selector {
+    .category-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+  
+      h2 {
+        margin: 0;
+      }
+    }
+  
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+  
+      .category-item {
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+  
+        &.selected {
+          box-shadow: 0 0 0 2px var(--ion-color-primary);
+        }
+      }
+    }
+  }

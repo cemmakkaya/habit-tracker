@@ -1,45 +1,106 @@
-<!-- src/app/modals/add-habit/add-habit.page.html -->
-<ion-header>
+<!-- add-habit.page.html -->
+<ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title>Neue Gewohnheit</ion-title>
-    <ion-buttons slot="end">
+    <ion-buttons slot="start">
       <ion-button (click)="dismiss()">
-        <ion-icon name="close"></ion-icon>
+        <ion-icon name="close-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
+    <ion-title>Neue Gewohnheit</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Gewohnheit hinzufügen</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item>
-        <ion-label position="stacked">Name</ion-label>
-        <ion-input [(ngModel)]="habit.name" placeholder="z.B. Lesen"></ion-input>
-      </ion-item>
+<ion-content>
+  <div class="add-habit-container">
+    <!-- Habit Name -->
+    <ion-item>
+      <ion-label position="stacked">Gewohnheitsname</ion-label>
+      <ion-input 
+        [(ngModel)]="habitName" 
+        placeholder="z.B. Lesen, Meditation..."
+        clearInput>
+      </ion-input>
+    </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Kategorie</ion-label>
-        <ion-select [(ngModel)]="habit.category" (ionChange)="openCategoryModal()">
-          <ion-select-option *ngFor="let cat of categories" [value]="cat.name">
-            {{cat.name}}
-          </ion-select-option>
-          <ion-select-option value="new">+ Neue Kategorie</ion-select-option>
-        </ion-select>
-      </ion-item>
+    <!-- Category Selection -->
+    <div class="category-selector">
+      <div class="category-header">
+        <h2>Kategorie wählen</h2>
+        <ion-button 
+          fill="clear" 
+          size="small" 
+          (click)="openAddCategoryPage()">
+          <ion-icon name="add-outline" slot="start"></ion-icon>
+          Neu
+        </ion-button>
+      </div>
+      <div class="category-grid">
+        <div 
+          *ngFor="let cat of categories" 
+          class="category-item" 
+          [class.selected]="category === cat.name"
+          [style.background]="cat.color + '22'"
+          (click)="selectCategory(cat)">
+          <span>{{cat.name}}</span>
+        </div>
+      </div>
+    </div>
 
-      <ion-item>
-        <ion-label position="stacked">Ziel</ion-label>
-        <ion-input [(ngModel)]="habit.target" placeholder="z.B. 30 Minuten täglich"></ion-input>
-      </ion-item>
+    <!-- Duration -->
+    <ion-item>
+      <ion-label>Dauer der Gewohnheit</ion-label>
+      <ion-select [(ngModel)]="duration">
+        <ion-select-option value="15">15 Tage</ion-select-option>
+        <ion-select-option value="30">30 Tage</ion-select-option>
+        <ion-select-option value="60">60 Tage</ion-select-option>
+        <ion-select-option value="90">90 Tage</ion-select-option>
+      </ion-select>
+    </ion-item>
 
-      <ion-button expand="block" class="ion-margin-top" (click)="confirm()">
-        <ion-icon name="checkmark" slot="start"></ion-icon>
-        Erstellen
-      </ion-button>
-    </ion-card-content>
-  </ion-card>
+    <!-- Frequency -->
+    <ion-item>
+      <ion-label>Häufigkeit</ion-label>
+      <ion-select [(ngModel)]="frequency">
+        <ion-select-option value="daily">Täglich</ion-select-option>
+        <ion-select-option value="weekly">Wöchentlich</ion-select-option>
+        <ion-select-option value="custom">Benutzerdefiniert</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Custom Frequency (nur wenn 'custom' gewählt) -->
+    <ion-item *ngIf="frequency === 'custom'">
+      <ion-label>Ausführungen pro Woche</ion-label>
+      <ion-input 
+        type="number" 
+        [(ngModel)]="customFrequency" 
+        min="1" 
+        max="7">
+      </ion-input>
+    </ion-item>
+
+    <!-- Notifications -->
+    <ion-item>
+      <ion-label>Erinnerungen</ion-label>
+      <ion-toggle [(ngModel)]="notifications"></ion-toggle>
+    </ion-item>
+
+    <!-- Notification Time (nur wenn Benachrichtigungen aktiviert) -->
+    <ion-item *ngIf="notifications">
+      <ion-label>Erinnerungszeit</ion-label>
+      <ion-datetime 
+        presentation="time" 
+        [(ngModel)]="notificationTime">
+      </ion-datetime>
+    </ion-item>
+  </div>
+
+  <ion-toolbar>
+    <ion-button 
+      expand="block" 
+      (click)="confirm()"
+      [disabled]="!isFormValid()"
+      class="confirm-button">
+      Gewohnheit erstellen
+    </ion-button>
+  </ion-toolbar>
 </ion-content>

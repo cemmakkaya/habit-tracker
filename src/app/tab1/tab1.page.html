@@ -7,9 +7,6 @@
   </ion-toolbar>
   <ion-toolbar>
     <ion-segment [(ngModel)]="selectedSegment" class="custom-segment">
-      <ion-segment-button value="all">
-        <ion-label>Alle</ion-label>
-      </ion-segment-button>
       <ion-segment-button value="inProgress">
         <ion-label>Aktiv</ion-label>
       </ion-segment-button>
@@ -50,44 +47,43 @@
 
   <!-- Gewohnheiten Liste -->
   <div class="habits-container">
-      <ion-card *ngFor="let habit of habits" class="habit-card" [style.border-left]="'4px solid ' + getCategoryColor" (click)="openHabitDetails(habit)">
-        <ion-card-content>
-          <div class="habit-header">
-            <div class="habit-title">
-              <div class="habit-checkbox" 
-                   [class.checked]="habit.todayDone"
-                   (click)="toggleTodayDone(habit, $event)">
-                <ion-icon name="checkmark"></ion-icon>
-              </div>
-              <div>
-                <h2>{{habit.name}}</h2>
-                <p class="category">{{habit.category}}</p>
-              </div>
-            </div>
-            <div class="streak-badge">
-              <ion-icon name="flame"></ion-icon>
-              {{habit.streak}}
-            </div>
-          </div>
-        
-        
-        <div class="progress-container">
-          <ion-progress-bar [value]="habit.progress/100" [style.--progress-background]="habit.color"></ion-progress-bar>
-          <span class="progress-text">{{habit.progress}}%</span>
-        </div>
-        
-        <div class="habit-actions">
-          <ion-button fill="clear" size="small">
-            <ion-icon slot="icon-only" name="camera-outline"></ion-icon>
-          </ion-button>
-          <ion-button fill="clear" size="small">
-            <ion-icon slot="icon-only" name="mic-outline"></ion-icon>
-          </ion-button>
-          <ion-button fill="clear" size="small">
-            <ion-icon slot="icon-only" name="create-outline"></ion-icon>
-          </ion-button>
-        </div>
-      </ion-card-content>
+    <ion-card *ngFor="let habit of getFilteredHabits()" 
+          class="habit-card"
+          [style.border-left]="'4px solid ' + getCategoryColor(habit.category)"
+          (click)="openHabitDetails(habit)">
+    <ion-card-content>
+    <div class="habit-header">
+    <div class="habit-title">
+      <div class="habit-checkbox" 
+          [class.checked]="habit.todayDone"
+          (click)="toggleTodayDone(habit, $event)">
+        <ion-icon name="checkmark"></ion-icon>
+      </div>
+      <div>
+        <h2>{{habit.name}}</h2>
+        <p class="category">{{habit.category}}</p>
+      </div>
+    </div>
+    <div class="streak-badge">
+      <ion-icon name="flame"></ion-icon>
+      {{habit.streak}}
+    </div>
+    </div>
+
+    <div class="progress-container">
+    <ion-progress-bar [value]="habit.progress/100" [style.--progress-background]="habit.color"></ion-progress-bar>
+    <span class="progress-text">{{habit.progress}}%</span>
+    </div>
+
+    <!-- Abschluss-Button -->
+    <ion-button 
+    *ngIf="habit.progress >= 100 && !habit.isCompleted"
+    (click)="completeHabit(habit, $event)"
+    expand="block"
+    class="complete-button">
+    Gewohnheit abschließen
+    </ion-button>
+    </ion-card-content>
     </ion-card>
   </div>
 

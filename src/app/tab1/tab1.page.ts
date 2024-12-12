@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule, ModalController } from '@ionic/angular';
+import { IonicModule, ModalController, AlertController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AddHabitPage } from '../modals/add-habit/add-habit.page';
@@ -32,6 +32,14 @@ interface Habit {
   color: string;
   todayDone: boolean;
   entries: HabitEntry[];
+  isCompleted?: boolean;
+  
+  // Neue Eigenschaften
+  duration?: number;
+  frequency?: 'daily' | 'weekly' | 'custom';
+  customFrequency?: number;
+  notifications?: boolean;
+  notificationTime?: string;
 }
 
 interface DocumentationData {
@@ -78,7 +86,8 @@ export class Tab1Page implements OnInit {
     }
   ];
 
-  constructor(private modalCtrl: ModalController) {
+  constructor(private modalCtrl: ModalController, private alertController: AlertController) {
+    
     addIcons({
       add,
       'checkmark-circle-outline': checkmarkCircleOutline,
@@ -120,11 +129,11 @@ export class Tab1Page implements OnInit {
   getFilteredHabits(): Habit[] {
     switch(this.selectedSegment) {
       case 'inProgress':
-        return this.habits.filter(habit => !habit.todayDone);
+        return this.habits.filter(habit => !habit.todayDone && !habit.isCompleted);
       case 'completed':
-        return this.habits.filter(habit => habit.todayDone);
+        return this.habits.filter(habit => habit.isCompleted);
       default:
-        return this.habits;
+        return this.habits.filter(habit => !habit.isCompleted);
     }
   }
 
@@ -142,10 +151,70 @@ export class Tab1Page implements OnInit {
     }
   }
 
+  async completeHabit(habit: Habit, event: Event) {
+    event.stopPropagation();
+    
+    const alert = await this.alertController.create({
+      header: 'Gewohnheit abschließen',
+      message: 'Möchtest du diese Gewohnheit wirklich als abgeschlossen markieren?',
+      buttons: [
+        {
+          text: 'Abbrechen',
+          role: 'cancel'
+        },
+        {
+          text: 'Abschließen',
+          handler: async () => {
+            habit.isCompleted = true;
+            await this.saveHabits();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
   async toggleTodayDone(habit: Habit, event: Event) {
     try {
       event.stopPropagation();
+  
+      if (habit.todayDone) {
+        // Bereits erledigt: Lösch-Bestätigung
+        const alert = await this.alertController.create({
+          header: 'Eintrag löschen',
+          message: 'Möchtest du den heutigen Eintrag wirklich löschen?',
+          buttons: [
+            {
+              text: 'Abbrechen',
+              role: 'cancel'
+            },
+            {
+              text: 'Löschen',
+              role: 'destructive',
+              handler: async () => {
+                habit.todayDone = false;
+                habit.streak = Math.max(0, habit.streak - 1);
+                
+                // Lösche den Eintrag für heute
+                const today = new Date().toDateString();
+                habit.entries = habit.entries.filter(entry => 
+                  new Date(entry.date).toDateString() !== today
+                );
+                
+                // Reduziere den Fortschritt um einen Schritt
+                const progressStep = 100 / (habit.duration || 30);
+                habit.progress = Math.round(Math.max(0, habit.progress - progressStep));
+  
+                await this.saveHabits();
+              }
+            }
+          ]
+        });
+        await alert.present();
+        return;
+      }
       
+      // Modal für Dokumentation öffnen
       const modal = await this.modalCtrl.create({
         component: HabitDocumentationPage,
         componentProps: {
@@ -154,10 +223,10 @@ export class Tab1Page implements OnInit {
         breakpoints: [0, 0.5, 0.8],
         initialBreakpoint: 0.5
       });
-
+  
       await modal.present();
       const { data, role } = await modal.onWillDismiss<DocumentationData>();
-
+  
       if (role === 'confirm' && data) {
         habit.todayDone = true;
         habit.streak++;
@@ -173,7 +242,8 @@ export class Tab1Page implements OnInit {
                   data.type === 'image' ? data.imagePath! :
                   data.audioPath!
         });
-
+  
+        // Rufe updateHabitProgress auf, um den Fortschritt schrittweise zu aktualisieren
         await this.updateHabitProgress(habit);
         await this.saveHabits();
       }
@@ -189,20 +259,31 @@ export class Tab1Page implements OnInit {
         breakpoints: [0, 0.5, 0.8],
         initialBreakpoint: 0.5
       });
-
+  
       await modal.present();
       const { data, role } = await modal.onWillDismiss();
       
       if (role === 'confirm' && data) {
-        this.habits.push({
+        const newHabit = {
           name: data.name,
           category: data.category,
           progress: 0,
           streak: 0,
           color: data.color, 
           todayDone: false,
-          entries: []
-        });
+          entries: [],
+          isCompleted: false,
+          duration: data.duration,
+          frequency: data.frequency,
+          customFrequency: data.customFrequency,
+          notifications: data.notifications,
+          notificationTime: data.notificationTime
+        };
+  
+        // Fortschrittsberechnung basierend auf Dauer und Häufigkeit
+        this.calculateInitialProgress(newHabit);
+  
+        this.habits.push(newHabit);
         await this.saveHabits();
       }
     } catch (error) {
@@ -210,15 +291,47 @@ export class Tab1Page implements OnInit {
     }
   }
 
+  calculateInitialProgress(habit: Habit) {
+    switch(habit.frequency) {
+      case 'daily':
+        habit.progress = 0;
+        break;
+      case 'weekly':
+        habit.progress = habit.customFrequency 
+          ? Math.round((habit.customFrequency / 7) * 100)
+          : 0;
+        break;
+      case 'custom':
+        habit.progress = habit.customFrequency && habit.duration
+          ? Math.round((habit.customFrequency / habit.duration) * 100)
+          : 0;
+        break;
+      default:
+        habit.progress = 0;
+    }
+  }
+
   async updateHabitProgress(habit: Habit) {
     try {
-      const today = new Date();
-      const recentEntries = habit.entries.filter(entry => {
-        const entryDate = new Date(entry.date);
-        return entryDate.toDateString() === today.toDateString();
-      });
+      // Überprüfen, ob die Gewohnheit eine Dauer hat
+      if (!habit.duration) {
+        habit.duration = 30; // Standardwert, falls nicht definiert
+      }
+  
+      // Schrittweise Fortschrittsberechnung
+      const progressStep = 100 / habit.duration;
       
-      habit.progress = recentEntries.length > 0 ? 100 : 0;
+      // Zähle die Einträge für den aktuellen Tag
+      const today = new Date().toDateString();
+      const todayEntries = habit.entries.filter(entry => 
+        new Date(entry.date).toDateString() === today
+      );
+  
+      // Erhöhe den Fortschritt um einen Schritt, wenn ein Eintrag existiert
+      if (todayEntries.length > 0) {
+        habit.progress = Math.round(Math.min(100, habit.progress + progressStep));
+      }
+  
       await this.saveHabits();
     } catch (error) {
       console.error('Error updating habit progress:', error);
