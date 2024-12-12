@@ -135,4 +135,8 @@ export class HabitDetailsPage implements OnInit {
     });
     await alert.present();
   }
+
+  async saveEntries() {
+   
+  }
 }
