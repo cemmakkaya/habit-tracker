@@ -1,4 +1,3 @@
-// src/app/modals/habit-details/habit-details.page.ts
 import { Component, Input } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';

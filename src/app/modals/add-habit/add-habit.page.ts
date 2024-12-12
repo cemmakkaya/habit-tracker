@@ -122,14 +122,4 @@ export class AddHabitPage {
   public dismiss(): void {
     this.modalCtrl.dismiss(null, 'cancel');
   }
-
-  public openAddCategoryPage() {
-    this.modalCtrl.dismiss(); // Schließt das aktuelle Modal
-    this.modalCtrl.create({
-      component: AddCategoryPage,
-      breakpoints: [0, 0.5, 0.8],
-      initialBreakpoint: 0.5
-    }).then(modal => modal.present());
-  }
 }
-
