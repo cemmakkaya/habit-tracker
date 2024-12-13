@@ -1,81 +1,106 @@
-Habit Tracker - Ionic Angular App
+# HabitTracker - Ionic Angular App
 
-Projektbeschreibung
-Eine mobile Anwendung zur Verfolgung und Verwaltung von Gewohnheiten, entwickelt mit Ionic und Angular. Die App ermöglicht es Benutzern, Gewohnheiten zu erstellen, zu verfolgen und deren Fortschritt zu überwachen.
-Funktionen
+[![Ionic Version](https://img.shields.io/badge/Ionic-7.0.0-blue.svg)](http://ionicframework.com/)
+[![Angular Version](https://img.shields.io/badge/Angular-17.0.0-red.svg)](https://angular.io/)
+[![Capacitor Version](https://img.shields.io/badge/Capacitor-5.0.0-blue.svg)](https://capacitorjs.com/)
 
-Erstellen und Verwalten von Gewohnheiten
-Kategorisierung von Gewohnheiten
-Fortschrittsverfolgung
-Tägliche Erinnerungen
-Detaillierte Statistiken
-Dark Mode
-Lokale Datenspeicherung
+## 📱 Über das Projekt
 
-Voraussetzungen
+HabitTracker ist eine von Cem Akkaya mobile Applikation, welche es einem erleichtert leichter durchs Leben zu kommen. Mit dem MyHabitTracker, lassen sich Gewohnheiten einfach und diszipliniert regelmässig ausführen.
 
-Node.js (Version 16 oder höher)
-npm (kommt mit Node.js)
-Ionic CLI
-Angular CLI
-Ein Code-Editor (z.B. Visual Studio Code)
+## ✨ Features
 
-Installation
+- 📋 Erstellen und Verwalten von Gewohnheiten
+- 🏷️ Kategorisierung von Gewohnheiten
+- 📊 Fortschrittsverfolgung
+- 🔔 Tägliche Erinnerungen
+- 📈 Detaillierte Statistiken
+- 🌓 Dark Mode
+- 💾 Lokale Datenspeicherung
 
-Node.js und npm installieren
+## 🛠️ Voraussetzungen
 
-Lade Node.js von nodejs.org herunter und installiere es
-Überprüfe die Installation:
-bashCopynode --version
+- Node.js (Version 16 oder höher)
+- npm (kommt mit Node.js)
+- Ionic CLI
+- Angular CLI
+- Code-Editor (empfohlen: Visual Studio Code)
+
+## 🚀 Installation & Setup
+
+### Node.js und npm installieren
+```bash
+# Version überprüfen
+node --version
 npm --version
+```
 
+### Ionic CLI installieren
+```bash
+npm install -g @ionic/cli
+```
 
-
-Ionic CLI installieren
-bashCopynpm install -g @ionic/cli
-
-Projekt klonen
-bashCopygit clone [repository-url]
+### Projekt klonen und installieren
+```bash
+git clone [repository-url]
 cd habit-tracker
+npm install
+```
 
-Abhängigkeiten installieren
-bashCopynpm install
-
-Capacitor installieren und einrichten
-bashCopynpm install @capacitor/core
+### Capacitor einrichten
+```bash
+npm install @capacitor/core
 npm install @capacitor/cli --save-dev
 npx cap init
+```
 
-Erforderliche Capacitor-Plugins installieren
-bashCopynpm install @capacitor/preferences
+### Erforderliche Plugins installieren
+```bash
+npm install @capacitor/preferences
 npm install @capacitor/camera
 npm install capacitor-voice-recorder
 npx cap sync
+```
 
+## 🏃‍♂️ Projekt starten
 
-Projekt starten
-Entwicklungsserver
-bashCopyionic serve
-Native Builds
-Android
-bashCopyionic build
+### Entwicklungsserver
+```bash
+ionic serve
+```
+
+### Native Builds
+
+```bash
+# Android
+ionic build
 npx cap add android
 npx cap open android
-iOS
-bashCopyionic build
+
+# iOS
+ionic build
 npx cap add ios
 npx cap open ios
-Bekannte Probleme und Lösungen
-Problem: Weiße Seite nach dem Start
-Lösung: Cache und node_modules löschen und neu installieren
-bashCopyrm -rf node_modules
+```
+
+## 🔧 Troubleshooting
+
+### Weißer Bildschirm nach Start
+```bash
+rm -rf node_modules
 npm cache clean --force
 npm install
-Problem: Capacitor Plugins nicht gefunden
-Lösung: Plugins neu synchronisieren
-bashCopynpx cap sync
-Projektstruktur
-Copyhabit-tracker/
+```
+
+### Capacitor Plugin Synchronisation
+```bash
+npx cap sync
+```
+
+## 📁 Projektstruktur
+
+```
+habit-tracker/
 ├── src/
 │   ├── app/
 │   │   ├── modals/
@@ -87,15 +112,41 @@ Copyhabit-tracker/
 ├── android/
 ├── ios/
 └── capacitor.config.ts
-Entwicklungshinweise
-Lokale Datenbank
-Die App verwendet Capacitor Preferences für die lokale Datenspeicherung. Stellen Sie sicher, dass die entsprechenden Berechtigungen vorhanden sind.
-Icons und Splash Screens
-Platzieren Sie Ihre Icons im resources/ Ordner:
+```
 
-icon.png (mindestens 1024x1024px)
-splash.png (mindestens 2732x2732px)
+## 📱 App Icons & Splash Screens
 
-Generieren Sie die Assets mit:
-bashCopynpm install @capacitor/assets
+1. Platziere die Bilder in `resources/`:
+   - `icon.png` (1024x1024px)
+   - `splash.png` (2732x2732px)
+
+2. Generiere Assets:
+```bash
+npm install @capacitor/assets
 npx @capacitor/assets generate
+```
+
+## 🛡️ Umgebungsvariablen
+
+Environment Variablen:
+```
+supabaseUrl: 'https://akkiiqzddncczhwxnagl.supabase.co',
+supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFra2lpcXpkZG5jY3pod3huYWdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQwMDY3NzIsImV4cCI6MjA0OTU4Mjc3Mn0.oqwxR2pR75fMHFhURTgMw4mizWgRfxd0GVcxOUqfMrE',
+```
+
+## 📦 Abhängigkeiten
+
+Hauptabhängigkeiten:
+- @ionic/angular
+- @capacitor/core
+- @capacitor/preferences
+- @capacitor/camera
+- capacitor-voice-recorder
+
+## Ersteller
+
+Cem Akkaya - cem.akkaya@bbzbl-it.ch
+
+Projekt Link: https://github.com/cemmakkaya/habit-tracker
+
+
